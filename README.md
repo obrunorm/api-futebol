@@ -1,3 +1,3 @@
 # api-futebol
 
-Fazendo um teste apenas
+Api de futebol feita para o IT NeoCamp
