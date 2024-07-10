@@ -1,64 +1,50 @@
 package com.meli.apifutebol.service;
+import com.meli.apifutebol.exceptions.DuplicateNameException;
+import com.meli.apifutebol.exceptions.InvalidClubDataException;
 import com.meli.apifutebol.model.Clube;
 import com.meli.apifutebol.dto.ClubeDto;
+
+import com.meli.apifutebol.repository.ClubeRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
 
 @Service
 public class ClubeService {
 
 
-//    @Autowired
-//    private ClubeRespository clubeRepository;
+    @Autowired
+    private ClubeRepository clubeRepository;
 
-    public String salvar(ClubeDto clubeDto) {
-        if (clubeDto.getNome() == null) {
-            return "Nome não pode ser nulo!";
+    public Clube createClube(Clube clube) {
+        if (clubeRepository.existsByNome(clube.getNome())) {
+            throw new DuplicateNameException();
+        }
+        if (clube.getNome() == null || clube.getNome().length() < 2) {
+            throw new InvalidClubDataException("Nome do clube deve ter pelo menos duas letras e não deve ser nulo.");
+        }
+        if (clube.getDataCriacao() == null || clube.getDataCriacao().isAfter(LocalDate.now())) {
+            throw new InvalidClubDataException("Data de criação do clube não pode ser no futuro e nem nula.");
+        }
+        return clubeRepository.save(clube);
+    }
+
+    public Clube atualizarClube(@NonNull UUID uuid, ClubeDto clubeDto) {
+            Clube clube = clubeRepository.findByUuid(uuid);
+            BeanUtils.copyProperties(clubeDto, clube);
+            return clubeRepository.save(clube);
         }
 
-        Clube clube = converter(clubeDto);
-
-//        clubeRepository.save(clube);
-        return "Clube Salvo!";
+    public List<Clube> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return clubeRepository.findAll(pageable).getContent();
     }
-
-    public String atualizarClube(ClubeDto clubeDto) {
-        if (clubeDto.getNome().equals(clubeDto)) {
-            Clube clube = converter(clubeDto);
-//          clubeRepository.save(clube);
-            return "Clube Atualizado com sucesso!";
-        } else {
-            return "Clube não encontrado";
-        }
-    }
-
-    public String deletarClube(ClubeDto clubeDto) {
-        if (clubeDto.getNome().equals(clubeDto.getNome())) {
-            clubeDto.setAtivo(false);
-            Clube clube = converter(clubeDto);
-            return "Clube Deletado com sucesso!";
-        } else {
-            return "Clube não encontrado";
-        }
-    }
-
-//    public Page<Clube> buscarClubles(String nome, String estado, Boolean ativo, Pageable pageable) {
-//        if (nome == null) nome = "";
-//        if (estado == null) estado = "";
-//        if (ativo == null) ativo = true;
-//
-//        return clubeRepository.findByNomeContainingAndEstadoContainingAndAtivo(nome, estado, ativo, pageable);
-//    }
-
-
-    private Clube converter(ClubeDto clubeDto){
-        Clube clube = new Clube();
-        clube.setNome(clubeDto.getNome());
-        clube.setDataCriacao(clubeDto.getDataCriacao());
-        clube.setSiglaEstado(clubeDto.getSiglaEstado());
-        clube.setAtivo(clube.isAtivo());
-        return clube;
-    }
-
 }

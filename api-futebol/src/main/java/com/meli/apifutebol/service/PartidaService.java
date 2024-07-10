@@ -1,15 +1,8 @@
 package com.meli.apifutebol.service;
 
-import com.meli.apifutebol.dto.ClubeDto;
 import com.meli.apifutebol.dto.PartidaDto;
-import com.meli.apifutebol.model.Clube;
 import com.meli.apifutebol.model.Partida;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class PartidaService {

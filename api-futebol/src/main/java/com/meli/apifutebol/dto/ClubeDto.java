@@ -1,13 +1,27 @@
 package com.meli.apifutebol.dto;
 
-import java.util.Date;
+
+import com.meli.apifutebol.enums.Estados;
+import com.meli.apifutebol.enums.StatusClube;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 public class ClubeDto {
 
+    private UUID id;
     private String nome;
-    private String siglaEstado;
-    private Date dataCriacao;
-    private boolean ativo;
+    private Estados estados;
+    private LocalDate dataCriacao;
+    private StatusClube ativo;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -17,27 +31,27 @@ public class ClubeDto {
         this.nome = nome;
     }
 
-    public boolean isAtivo() {
+    public StatusClube getAtivo() {
         return ativo;
     }
 
-    public void setAtivo(boolean ativo) {
+    public void setAtivo(StatusClube ativo) {
         this.ativo = ativo;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public String getSiglaEstado() {
-        return siglaEstado;
+    public Estados getEstados() {
+        return estados;
     }
 
-    public void setSiglaEstado(String siglaEstado) {
-        this.siglaEstado = siglaEstado;
+    public void setEstados(Estados estados) {
+        this.estados = estados;
     }
 }

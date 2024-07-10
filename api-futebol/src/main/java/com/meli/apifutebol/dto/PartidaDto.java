@@ -1,6 +1,7 @@
 package com.meli.apifutebol.dto;
 
 import com.meli.apifutebol.model.Clube;
+import com.meli.apifutebol.model.Estadio;
 
 import java.time.LocalDateTime;
 
@@ -10,10 +11,10 @@ public class PartidaDto {
     private Clube clubeVisitante;
     private int resultadoClubeCasa;
     private int resultadoClubeVisitante;
-    private String estadio;
+    private Estadio estadio;
     private LocalDateTime dataHora;
 
-    public PartidaDto(Clube clubeCasa, Clube clubeVisitante, LocalDateTime dataHora, String estadio, int resultadoClubeVisitante, int resultadoClubeCasa) {
+    public PartidaDto(Clube clubeCasa, Clube clubeVisitante, LocalDateTime dataHora, Estadio estadio, int resultadoClubeVisitante, int resultadoClubeCasa) {
         this.clubeCasa = clubeCasa;
         this.clubeVisitante = clubeVisitante;
         this.dataHora = dataHora;
@@ -58,11 +59,11 @@ public class PartidaDto {
         this.resultadoClubeVisitante = resultadoClubeVisitante;
     }
 
-    public String getEstadio() {
+    public Estadio getEstadio() {
         return estadio;
     }
 
-    public void setEstadio(String estadio) {
+    public void setEstadio(Estadio estadio) {
         this.estadio = estadio;
     }
 
