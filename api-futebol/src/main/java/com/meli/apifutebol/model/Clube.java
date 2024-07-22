@@ -1,5 +1,7 @@
 package com.meli.apifutebol.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.meli.apifutebol.enums.Estados;
 import com.meli.apifutebol.enums.StatusClube;
 import jakarta.persistence.*;
@@ -9,6 +11,7 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,18 +19,17 @@ import java.util.UUID;
 public class Clube {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
 
     @Column(unique = true)
-    @Size(min = 3, max = 50)
+    @Size(min = 3)
     @NonNull
     private String nome;
 
     @NonNull
     @Enumerated(EnumType.STRING)
     private Estados estados;
-
 
     @NonNull
     @Past
@@ -37,15 +39,38 @@ public class Clube {
     @NonNull
     private StatusClube ativo;
 
+    @JsonBackReference
+    @OneToMany(mappedBy = "clubeCasa", cascade = CascadeType.ALL)
+    private List<Partida> partidasComoCasa;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "clubeVisitante", cascade = CascadeType.ALL)
+    private List<Partida> partidasComoVisitante;
+
+    @ManyToOne
+    @JoinColumn(name = "estadio_id")
+    private Estadio estadio;
+
     public Clube(){
 
     }
 
-    public UUID getId() {
+    public Clube(UUID uuid, String nome, Estados estados, LocalDate dataCriacao, StatusClube ativo, List<Partida> partidasComoCasa, List<Partida> partidasComoVisitante, Estadio estadio) {
+        this.uuid = uuid;
+        this.nome = nome;
+        this.estados = estados;
+        this.dataCriacao = dataCriacao;
+        this.ativo = ativo;
+        this.partidasComoCasa = partidasComoCasa;
+        this.partidasComoVisitante = partidasComoVisitante;
+        this.estadio = estadio;
+    }
+
+    public UUID getUuid() {
         return uuid;
     }
 
-    public void setId(UUID uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
@@ -79,5 +104,29 @@ public class Clube {
 
     public void setEstados(Estados estados) {
         this.estados = estados;
+    }
+
+    public List<Partida> getPartidasComoCasa() {
+        return partidasComoCasa;
+    }
+
+    public void setPartidasComoCasa(List<Partida> partidasComoCasa) {
+        this.partidasComoCasa = partidasComoCasa;
+    }
+
+    public List<Partida> getPartidasComoVisitante() {
+        return partidasComoVisitante;
+    }
+
+    public void setPartidasComoVisitante(List<Partida> partidasComoVisitante) {
+        this.partidasComoVisitante = partidasComoVisitante;
+    }
+
+    public Estadio getEstadio() {
+        return estadio;
+    }
+
+    public void setEstadio(Estadio estadio) {
+        this.estadio = estadio;
     }
 }

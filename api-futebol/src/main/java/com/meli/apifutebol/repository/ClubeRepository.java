@@ -1,5 +1,6 @@
 package com.meli.apifutebol.repository;
 
+import com.meli.apifutebol.enums.Estados;
 import com.meli.apifutebol.enums.StatusClube;
 import com.meli.apifutebol.model.Clube;
 import org.springframework.data.domain.Page;
@@ -15,9 +16,9 @@ import java.util.UUID;
 public interface ClubeRepository extends JpaRepository<Clube, UUID> {
     Clube findByUuid(UUID uuid);
 
-    List<Clube> findByNome(String nome);
-
     Page<Clube> findAll(Pageable pageable);
 
     boolean existsByNome(String nome);
+
+    boolean existsByNomeAndEstado(String nome, Estados estados);
 }

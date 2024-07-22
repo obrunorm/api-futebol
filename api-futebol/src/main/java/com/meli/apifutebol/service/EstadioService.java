@@ -2,36 +2,43 @@ package com.meli.apifutebol.service;
 
 import com.meli.apifutebol.dto.EstadioDto;
 import com.meli.apifutebol.model.Estadio;
+import com.meli.apifutebol.repository.EstadioRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 
 @Service
 public class EstadioService {
 
-    public String salvar(EstadioDto estadioDto) {
-//        estadioRepository.save(estadio);
-        Estadio estadio = converter(estadioDto);
-        return "Estadio cadastrado com sucesso!";
-    }
+    @Autowired
+    private EstadioRepository estadioRepository;
 
-    public String atualizarEstadio(EstadioDto estadioDto) {
-        if (estadioDto.getNomeEstadio().equals(estadioDto)) {
-            Estadio estadio = converter(estadioDto);
-//          estadioRepository.save(estadio);
-            return "Estadio Atualizado com sucesso!";
-        } else {
-            return "Estadio não encontrado";
-        }
-    }
-
-//    public Page<Estatio> buscarEstadios(String nomeEstagio, Pageable pageable) {
-//        if (nome == null) nomeEstadio = "";
-//        return estadioRepository.findByNomeContainingAndEstadio(nomeEstadiostadio, pageable);
-//    }
-
-    private Estadio converter(EstadioDto estadioDto) {
+    public EstadioDto createEstadio(EstadioDto estadioDto) {
         Estadio estadio = new Estadio();
-        estadio.setNomeEstadio(estadio.getNomeEstadio());
-        return estadio;
+        BeanUtils.copyProperties(estadioDto, estadio);
+        estadio = estadioRepository.save(estadio);
+        estadioDto.setId(estadio.getId());
+        return estadioDto;
     }
+
+    public EstadioDto updateEstadio(UUID uuid, EstadioDto estadioDto) {
+        Estadio estadio = estadioRepository.findByUuid(uuid);
+        BeanUtils.copyProperties(estadioDto, estadio);
+        estadio = estadioRepository.save(estadio);
+        return estadioDto;
+    }
+
+    public List<Estadio> getAll(String nomeEstadio, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return estadioRepository.findByNomeEstadioContaining(nomeEstadio, pageable);
+    }
+
+
 }

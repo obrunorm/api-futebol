@@ -3,18 +3,26 @@ package com.meli.apifutebol.dto;
 import com.meli.apifutebol.model.Clube;
 import com.meli.apifutebol.model.Estadio;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
 
 public class PartidaDto {
 
+    private UUID uuid;
     private Clube clubeCasa;
     private Clube clubeVisitante;
     private int resultadoClubeCasa;
     private int resultadoClubeVisitante;
     private Estadio estadio;
-    private LocalDateTime dataHora;
+    private LocalDate dataHora;
 
-    public PartidaDto(Clube clubeCasa, Clube clubeVisitante, LocalDateTime dataHora, Estadio estadio, int resultadoClubeVisitante, int resultadoClubeCasa) {
+    public PartidaDto() {
+    }
+
+    public PartidaDto(UUID uuid, Clube clubeCasa, Clube clubeVisitante, LocalDate dataHora, Estadio estadio, int resultadoClubeVisitante, int resultadoClubeCasa) {
+        this.uuid = uuid;
         this.clubeCasa = clubeCasa;
         this.clubeVisitante = clubeVisitante;
         this.dataHora = dataHora;
@@ -23,8 +31,12 @@ public class PartidaDto {
         this.resultadoClubeCasa = resultadoClubeCasa;
     }
 
-    public PartidaDto() {
+    public UUID getUuid() {
+        return uuid;
+    }
 
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Clube getClubeCasa() {
@@ -67,11 +79,11 @@ public class PartidaDto {
         this.estadio = estadio;
     }
 
-    public LocalDateTime getDataHora() {
+    public LocalDate getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(LocalDateTime dataHora) {
+    public void setDataHora(LocalDate dataHora) {
         this.dataHora = dataHora;
     }
 

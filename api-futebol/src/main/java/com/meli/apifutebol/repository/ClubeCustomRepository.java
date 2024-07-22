@@ -2,12 +2,12 @@ package com.meli.apifutebol.repository;
 
 import com.meli.apifutebol.enums.Estados;
 import com.meli.apifutebol.enums.StatusClube;
+
 import com.meli.apifutebol.model.Clube;
-import org.springframework.stereotype.Repository;
-
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
@@ -16,8 +16,7 @@ public class ClubeCustomRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-
-    public List<Clube> findAll(String nome, Estados estados, StatusClube ativo){
+    public List<Clube> findAll(String nome, Estados estados, StatusClube ativo, Integer page, Integer size){
 
         String query = "SELECT c FROM Clube c ";
         String condicao = "where ";
@@ -28,7 +27,7 @@ public class ClubeCustomRepository {
         }
 
         if(estados != null){
-            query += condicao + "c.siglaEstado = :estadosiglaEstado";
+            query += condicao + "c.estados = :estados";
             condicao = " and ";
         }
         if(ativo != null){
@@ -47,6 +46,11 @@ public class ClubeCustomRepository {
         }
         if(ativo != null){
             q.setParameter("ativo", ativo);
+        }
+
+        if (page != null && size != null) {
+            q.setFirstResult(page * size);
+            q.setMaxResults(size);
         }
 
         return q.getResultList();

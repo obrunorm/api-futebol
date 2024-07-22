@@ -1,25 +1,59 @@
 package com.meli.apifutebol.model;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
+import org.springframework.lang.NonNull;
 
+import java.time.LocalDate;
+import java.util.UUID;
 
+@Entity
+@Table(name = "tb_partida")
 public class Partida {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID uuid;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "clube_casa_id")
     private Clube clubeCasa;
-    private Clube clubeVisitante;
-    private int resultadoClubeCasa;
-    private int resultadoClubeVisitante;
-    private Estadio estadio;
-    private LocalDateTime dataHora;
 
-    public Partida(Clube clubeCasa, Clube clubeVisitante, LocalDateTime dataHora, Estadio estadio, int resultadoClubeVisitante, int resultadoClubeCasa) {
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "clube_visitante_id")
+    private Clube clubeVisitante;
+
+    @NonNull
+    private int resultadoClubeCasa;
+
+    @NonNull
+    private int resultadoClubeVisitante;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "estadio_id")
+    private Estadio estadio;
+
+    @NonNull
+    @Past
+    private LocalDate dataHora;
+
+
+    public Partida(UUID uuid, Clube clubeCasa, Clube clubeVisitante, int resultadoClubeCasa, int resultadoClubeVisitante, Estadio estadio, @NonNull LocalDate dataHora) {
+        this.uuid = uuid;
         this.clubeCasa = clubeCasa;
         this.clubeVisitante = clubeVisitante;
-        this.dataHora = dataHora;
-        this.estadio = estadio;
-        this.resultadoClubeVisitante = resultadoClubeVisitante;
         this.resultadoClubeCasa = resultadoClubeCasa;
+        this.resultadoClubeVisitante = resultadoClubeVisitante;
+        this.estadio = estadio;
+        this.dataHora = dataHora;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public Partida() {
@@ -66,11 +100,11 @@ public class Partida {
         this.estadio = estadio;
     }
 
-    public LocalDateTime getDataHora() {
+    public LocalDate getDataHora() {
         return dataHora;
     }
 
-    public void setDataHora(LocalDateTime dataHora) {
+    public void setDataHora(LocalDate dataHora) {
         this.dataHora = dataHora;
     }
 }

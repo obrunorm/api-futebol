@@ -1,47 +1,64 @@
 package com.meli.apifutebol.service;
 
+import com.meli.apifutebol.dto.ClubeDto;
 import com.meli.apifutebol.dto.PartidaDto;
+import com.meli.apifutebol.model.Clube;
 import com.meli.apifutebol.model.Partida;
+import com.meli.apifutebol.repository.PartidaRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 
 @Service
 public class PartidaService {
 
+    @Autowired
+    PartidaRepository partidaRepository;
 
-    public String salvar(PartidaDto partidaDto) {
-//        partidaRepository.save(partida);
-        Partida partida = converter(partidaDto);
-        return "Partida cadastrado com sucesso!";
-    }
-
-    public String atualizarPartida(PartidaDto partidaDto) {
-        if (partidaDto.getDataHora().equals(partidaDto)) {
-            Partida partida = converter(partidaDto);
-//          partidaRepository.save(partida);
-            return "Partida Atualizado com sucesso!";
-        } else {
-            return "Partida não encontrado";
-        }
-    }
-
-//    public Page<Partida> buscarPartidas(Clube  clubeCasa, Clube clubeVisitante, String estadio, Pageable pageable) {
-//        if (nome == null) clubeCasa = "";
-//        if (estado == null) clubeVisitante = "";
-//        if (ativo == null) estadio = "";
-//
-//        return partidaRepository.findByNomeContainingAndClubeAndEstadio(clubeCasa, clubeVisitante, estadio, pageable);
-//    }
-
-
-
-    private Partida converter(PartidaDto partidaDto){
+    public PartidaDto createPartida(PartidaDto partidaDto) {
         Partida partida = new Partida();
-        partida.setClubeCasa(partidaDto.getClubeCasa());
-        partida.setClubeVisitante(partidaDto.getClubeVisitante());
-        partida.setDataHora(partidaDto.getDataHora());
-        partida.setEstadio(partidaDto.getEstadio());
-        partida.setResultadoClubeCasa(partidaDto.getResultadoClubeCasa());
-        partida.setResultadoClubeVisitante(partida.getResultadoClubeVisitante());
-        return partida;
+        BeanUtils.copyProperties(partidaDto, partida);
+        partida = partidaRepository.save(partida);
+        partidaDto.setUuid(partida.getUuid());
+        return partidaDto;
     }
+
+    public PartidaDto updatePartida(UUID uuid, PartidaDto partidaDto) {
+        Partida partida = partidaRepository.findByUuid(uuid);
+        BeanUtils.copyProperties(partidaDto, partida);
+        partida = partidaRepository.save(partida);
+        return partidaDto;
+    }
+
+    public boolean existsPartidaProxima(PartidaDto novaPartidaDto) {
+        LocalDateTime novaDataHora = novaPartidaDto.getDataHora().atStartOfDay();
+
+        // Verifica se existe alguma partida próxima para o clube da casa
+        boolean existeParaClubeCasa = partidaRepository.existsPartidaProxima(
+                novaPartidaDto.getClubeCasa().getUuid(),
+                novaDataHora.minusHours(48),
+                novaDataHora.plusHours(48));
+
+        // Verifica se existe alguma partida próxima para o clube visitante
+        boolean existeParaClubeVisitante = partidaRepository.existsPartidaProxima(
+                novaPartidaDto.getClubeVisitante().getUuid(),
+                novaDataHora.minusHours(48),
+                novaDataHora.plusHours(48));
+
+        // Retorna true se houver alguma partida próxima para qualquer um dos clubes
+        return existeParaClubeCasa || existeParaClubeVisitante;
+    }
+
+    public boolean existePartidaNoMesmoDia(PartidaDto novaPartidaDto) {
+        LocalDate novaData = novaPartidaDto.getDataHora();
+
+        // Verifica se o estádio já possui partida marcada para o mesmo dia
+        return partidaRepository.existePartidaNoMesmoDia(novaPartidaDto.getEstadio().getId(), novaData);
+    }
+
 }
