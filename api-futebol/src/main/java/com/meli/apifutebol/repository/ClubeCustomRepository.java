@@ -42,7 +42,7 @@ public class ClubeCustomRepository {
         }
 
         if(estados != null){
-            q.setParameter("siglaEstado", estados);
+            q.setParameter("estados", estados);
         }
         if(ativo != null){
             q.setParameter("ativo", ativo);

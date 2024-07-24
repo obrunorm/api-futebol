@@ -37,8 +37,11 @@ public class Partida {
     @Past
     private LocalDate dataHora;
 
+    @ManyToOne
+    @JoinColumn(name = "clube_vencedor_id")
+    private Clube clubeVencedor;
 
-    public Partida(UUID uuid, Clube clubeCasa, Clube clubeVisitante, int resultadoClubeCasa, int resultadoClubeVisitante, Estadio estadio, @NonNull LocalDate dataHora) {
+    public Partida(UUID uuid, Clube clubeCasa, Clube clubeVisitante, int resultadoClubeCasa, int resultadoClubeVisitante, Estadio estadio, @NonNull LocalDate dataHora, Clube clubeVencedor) {
         this.uuid = uuid;
         this.clubeCasa = clubeCasa;
         this.clubeVisitante = clubeVisitante;
@@ -46,6 +49,7 @@ public class Partida {
         this.resultadoClubeVisitante = resultadoClubeVisitante;
         this.estadio = estadio;
         this.dataHora = dataHora;
+        this.clubeVencedor = clubeVencedor;
     }
 
     public UUID getUuid() {
@@ -106,5 +110,13 @@ public class Partida {
 
     public void setDataHora(LocalDate dataHora) {
         this.dataHora = dataHora;
+    }
+
+    public Clube getClubeVencedor() {
+        return clubeVencedor;
+    }
+
+    public void setClubeVencedor(Clube clubeVencedor) {
+        this.clubeVencedor = clubeVencedor;
     }
 }

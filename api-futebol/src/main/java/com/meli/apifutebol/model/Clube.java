@@ -47,15 +47,20 @@ public class Clube {
     @OneToMany(mappedBy = "clubeVisitante", cascade = CascadeType.ALL)
     private List<Partida> partidasComoVisitante;
 
+    @JsonBackReference
+    @OneToMany(mappedBy = "clubeVencedor", cascade = CascadeType.ALL)
+    private List<Partida> clubeVencedor;
+
     @ManyToOne
     @JoinColumn(name = "estadio_id")
     private Estadio estadio;
 
-    public Clube(){
+    public Clube(List<Partida> clubeVencedor){
 
+        this.clubeVencedor = clubeVencedor;
     }
 
-    public Clube(UUID uuid, String nome, Estados estados, LocalDate dataCriacao, StatusClube ativo, List<Partida> partidasComoCasa, List<Partida> partidasComoVisitante, Estadio estadio) {
+    public Clube(UUID uuid, String nome, Estados estados, LocalDate dataCriacao, StatusClube ativo, List<Partida> partidasComoCasa, List<Partida> partidasComoVisitante, List<Partida> clubeVencedor, Estadio estadio) {
         this.uuid = uuid;
         this.nome = nome;
         this.estados = estados;
@@ -63,7 +68,12 @@ public class Clube {
         this.ativo = ativo;
         this.partidasComoCasa = partidasComoCasa;
         this.partidasComoVisitante = partidasComoVisitante;
+        this.clubeVencedor = clubeVencedor;
         this.estadio = estadio;
+    }
+
+    public Clube() {
+
     }
 
     public UUID getUuid() {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -30,4 +31,12 @@ public interface PartidaRepository extends JpaRepository<Partida, UUID> {
     boolean existePartidaNoMesmoDia(@Param("estadioId") UUID estadioId,
                                     @Param("data") LocalDate data);
 
-}
+//    @Query("SELECT p FROM Partida p WHERE p.clubeCasa.uuid = :clubeUuid OR p.clubeVisitante.uuid = :clubeUuid")
+//    List<Partida> findByClubeUuid(UUID clubeUuid);
+
+    List<Partida> findByClubeCasa_UuidOrClubeVisitante_Uuid(UUID clubeCasaUuid, UUID clubeVisitanteUuid);
+
+    @Query("SELECT p FROM Partida p " +
+            "WHERE (p.clubeCasa.uuid = :clube1Uuid AND p.clubeVisitante.uuid = :clube2Uuid) " +
+            "   OR (p.clubeCasa.uuid = :clube2Uuid AND p.clubeVisitante.uuid = :clube1Uuid)")
+    List<Partida> findByClubes(UUID clube1Uuid, UUID clube2Uuid);}

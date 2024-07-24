@@ -14,11 +14,13 @@ import java.util.UUID;
 
 @Repository
 public interface ClubeRepository extends JpaRepository<Clube, UUID> {
+
     Clube findByUuid(UUID uuid);
 
-    Page<Clube> findAll(Pageable pageable);
+//    Page<Clube> findAll(Pageable pageable);
 
     boolean existsByNome(String nome);
 
-    boolean existsByNomeAndEstado(String nome, Estados estados);
+    boolean existsByNomeAndEstados(String nome, Estados estados);
+
 }
